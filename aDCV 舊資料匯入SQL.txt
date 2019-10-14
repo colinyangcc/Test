@@ -1,0 +1,87 @@
+USE master;  
+GO  
+EXEC sp_who;  
+GO 
+
+kill 61
+
+USE master;
+
+GO
+
+ALTER DATABASE e0611
+
+SET SINGLE_USER
+
+WITH ROLLBACK IMMEDIATE;
+
+GO
+
+
+SELECT request_session_id AS spid,
+    resource_type AS rt,
+    resource_databASe_id AS rdb,
+    (CASE resource_type 
+    WHEN 'OBJECT' then object_name(resource_ASsociated_entity_id) 
+    WHEN 'DATABASE' then 'e0611' 
+    ELSE 
+    (SELECT object_name(object_id) FROM sys.partitions 
+        WHERE hobt_id = resource_ASsociated_entity_id) END) AS objname,
+    resource_description AS rd,
+    request_mode AS rm,
+    request_status AS rs
+FROM sys.dm_tran_locks 
+
+
+-- 查詢筆數 SQL --
+SELECT  count(*)
+FROM [e0611].[dbo].[tag_list] where updatetime >= '2018-05-01 00:00:00' and  updatetime < '2018-06-01 00:00:00'
+
+
+-- 匯出SQL --
+SELECT 
+      [MAC]
+      ,[tagidw]
+      ,[tagidb]
+      ,[tagid]
+      ,[date1]
+      ,[time1]
+      ,[msec1]
+      ,[date2]
+      ,[time2]
+      ,[msec2]
+      ,[count]
+      ,[tx]
+      ,[rx]
+      ,[protohash]
+      ,[proto]
+      ,[pcword]
+      ,[rssi]
+      ,[rssi_max]
+      ,[speed]
+      ,[speed_min]
+      ,[speed_max]
+      ,[speed_top]
+      ,[dir]
+      ,[g2date1]
+      ,[g2date2]
+      ,[g2date3]
+      ,[g2date4]
+      ,[g2ops]
+      ,[g2ops1]
+      ,[g2ops2]
+      ,[g2ops3]
+      ,[g2ops4]
+      ,[g2ops5]
+      ,[g2ops6]
+      ,[g2ops7]
+      ,[g2ops8]
+      ,[auth]
+      ,[xpc]
+      ,[freq]
+      ,[alarm]
+      ,[ackdatatime]
+      ,[history_flag]
+      ,[updatetime]
+  FROM [e0611].[dbo].[tag_list] where updatetime >= '2018-05-01 00:00:00' and  updatetime < '2018-06-01 00:00:00'
+  
